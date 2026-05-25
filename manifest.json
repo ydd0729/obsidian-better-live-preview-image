@@ -1,0 +1,9 @@
+{
+  "id": "image-toolkit",
+  "name": "Image Toolkit",
+  "version": "1.0.0",
+  "minAppVersion": "1.5.0",
+  "description": "Adds image alignment controls and Live Preview image Markdown editing tools.",
+  "author": "Dong Yang",
+  "isDesktopOnly": false
+}

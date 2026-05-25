@@ -1,0 +1,111 @@
+name: Release Obsidian plugin
+
+on:
+  push:
+    tags:
+      - "*"
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
+      attestations: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22.x"
+
+      - name: Enable pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11.1.2
+          run_install: false
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build
+        run: pnpm run build
+
+      - name: Verify release version
+        run: |
+          tag="${GITHUB_REF#refs/tags/}"
+          version="$(node -p "require('./manifest.json').version")"
+          if [ "$tag" != "$version" ]; then
+            echo "Tag $tag does not match manifest version $version"
+            exit 1
+          fi
+
+      - name: Extract release notes
+        run: |
+          tag="${GITHUB_REF#refs/tags/}"
+          node <<'NODE'
+          const fs = require("node:fs");
+
+          const tag = process.env.GITHUB_REF.replace("refs/tags/", "");
+          const lines = fs.readFileSync("CHANGELOG.md", "utf8").split(/\r?\n/);
+          const notesLines = [];
+          let isTargetSection = false;
+
+          for (const line of lines) {
+            if (line === `## ${tag}`) {
+              isTargetSection = true;
+              continue;
+            }
+            if (isTargetSection && line.startsWith("## ")) {
+              break;
+            }
+            if (isTargetSection) {
+              notesLines.push(line);
+            }
+          }
+
+          const notes = notesLines.join("\n").trim();
+
+          if (!notes) {
+            process.exitCode = 1;
+          } else {
+            fs.writeFileSync("release-notes.md", `${notes}\n`);
+          }
+          NODE
+
+          if [ ! -s release-notes.md ]; then
+            echo "No release notes found for $tag in CHANGELOG.md"
+            exit 1
+          fi
+
+      - name: Generate artifact attestations
+        uses: actions/attest@v4
+        with:
+          subject-path: |
+            main.js
+            manifest.json
+            styles.css
+
+      - name: Create release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          tag="${GITHUB_REF#refs/tags/}"
+          if gh release view "$tag" >/dev/null 2>&1; then
+            echo "Release $tag already exists; skipping creation."
+            exit 0
+          fi
+
+          gh release create "$tag" \
+            --title "$tag" \
+            --notes-file release-notes.md \
+            --verify-tag \
+            --latest \
+            main.js manifest.json styles.css
