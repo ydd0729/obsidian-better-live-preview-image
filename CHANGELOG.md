@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.1
+
+- Rename the plugin to Better Live Preview Image.
+- Rename the plugin id to `better-live-preview-image`.
+
 ## 1.0.0
 
 - Add image alignment controls for left, center, and right alignment.

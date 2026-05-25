@@ -1,6 +1,6 @@
 {
-  "name": "image-toolkit",
-  "version": "1.0.0",
+  "name": "better-live-preview-image",
+  "version": "1.0.1",
   "packageManager": "pnpm@11.1.2",
   "private": true,
   "scripts": {

@@ -1,11 +1,11 @@
 # 项目维护说明
 
-本文件只记录 `image-toolkit` 仓库特有、下次继续维护时容易忘的信息。通用 Obsidian 插件开发、GitHub release、Git 操作规范优先看全局 skill。
+本文件只记录 `better-live-preview-image` 仓库特有、下次继续维护时容易忘的信息。通用 Obsidian 插件开发、GitHub release、Git 操作规范优先看全局 skill。
 
 ## 项目元数据
 
-- 插件 id：`image-toolkit`
-- GitHub repo：`ydd0729/obsidin-image-toolkit`
+- 插件 id：`better-live-preview-image`
+- GitHub repo：`ydd0729/better-live-preview-image`
 - 作者名：`Dong Yang`，不要写成 `yd`。
 - `manifest.json.version`、`package.json.version` 和 Git tag 必须保持一致。
 

@@ -1,10 +1,10 @@
-# Image Toolkit
+# Better Live Preview Image
 
-Image Toolkit adds focused image editing tools for Markdown notes in Obsidian. It works by editing image Markdown directly, so notes stay portable and readable without the plugin.
+Better Live Preview Image improves image editing in Obsidian Live Preview. It works by editing image Markdown directly, so notes stay portable and readable without the plugin.
 
 ## Features
 
-Image Toolkit currently has two features:
+Better Live Preview Image currently has two features:
 
 1. **Image alignment**: Align images left, center, or right from the image context menu, command palette, or default hotkeys.
 2. **Live Preview image Markdown editing**: Click an image in Live Preview to reveal its Markdown link, keep a selected image frame, and resize from the lower-right handle while the Markdown remains visible.
@@ -19,9 +19,9 @@ Right-click an image in Live Preview or Reading view and choose one of:
 
 You can also run these commands from the command palette:
 
-- `Image Toolkit: Set current image left aligned`
-- `Image Toolkit: Set current image centered`
-- `Image Toolkit: Set current image right aligned`
+- `Better Live Preview Image: Set current image left aligned`
+- `Better Live Preview Image: Set current image centered`
+- `Better Live Preview Image: Set current image right aligned`
 
 Default hotkeys:
 
@@ -29,7 +29,7 @@ Default hotkeys:
 - `Ctrl/Cmd + Alt + Shift + Down`: align the selected or current image center
 - `Ctrl/Cmd + Alt + Shift + Right`: align the selected or current image right
 
-To change the hotkeys, use Obsidian's built-in **Settings -> Hotkeys** page and search for `Image Toolkit`.
+To change the hotkeys, use Obsidian's built-in **Settings -> Hotkeys** page and search for `Better Live Preview Image`.
 
 ## Live Preview Markdown Editing
 
@@ -68,19 +68,19 @@ When an image matches the default alignment configured in the plugin settings, t
 
 ## Privacy
 
-Image Toolkit runs entirely inside your vault. It does not use network access, telemetry, ads, accounts, or external services.
+Better Live Preview Image runs entirely inside your vault. It does not use network access, telemetry, ads, accounts, or external services.
 
 ## Installation
 
-After the plugin is published, install it from **Settings -> Community plugins -> Browse** and search for `Image Toolkit`.
+After the plugin is published, install it from **Settings -> Community plugins -> Browse** and search for `Better Live Preview Image`.
 
-For manual installation, copy these files into `.obsidian/plugins/image-toolkit/`:
+For manual installation, copy these files into `.obsidian/plugins/better-live-preview-image/`:
 
 - `manifest.json`
 - `main.js`
 - `styles.css`
 
-Then enable `Image Toolkit` from **Settings -> Community plugins**.
+Then enable `Better Live Preview Image` from **Settings -> Community plugins**.
 
 ## Support
 
