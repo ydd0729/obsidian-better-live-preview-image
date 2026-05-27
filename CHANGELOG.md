@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.2
+
+- Fix Live Preview resizing when the same image link appears multiple times in a note.
+- Fix image alignment in Live Preview lists and callouts.
+
 ## 1.0.1
 
 - Rename the plugin to Better Live Preview Image.

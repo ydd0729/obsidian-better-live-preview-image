@@ -188,19 +188,20 @@ export default class ImageAlignmentPlugin extends Plugin {
       return null;
     }
 
+    const owningView = this.getMarkdownViewContainingElement(element);
+    if (owningView) {
+      const occurrenceIndex = this.getImageSourceOccurrenceIndex(owningView, element, imageSource);
+      if (occurrenceIndex !== null) {
+        return this.findImageTargetBySource(owningView, imageSource, occurrenceIndex);
+      }
+
+      return this.findImageTargetBySource(owningView, imageSource, 0);
+    }
+
     for (const view of this.getCandidateMarkdownViews()) {
-      for (let lineNumber = 0; lineNumber < view.editor.lineCount(); lineNumber += 1) {
-        const line = view.editor.getLine(lineNumber);
-        const match = findImagesInLine(line).find((candidate) =>
-          imageMatchHasSource(candidate.value, imageSource)
-        );
-        if (match) {
-          return {
-            editor: view.editor,
-            line: lineNumber,
-            match
-          };
-        }
+      const imageTarget = this.findImageTargetBySource(view, imageSource, 0);
+      if (imageTarget) {
+        return imageTarget;
       }
     }
 
@@ -218,6 +219,62 @@ export default class ImageAlignmentPlugin extends Plugin {
     }
 
     return views;
+  }
+
+  private getMarkdownViewContainingElement(element: Element): MarkdownView | null {
+    return this.getCandidateMarkdownViews().find((view) => view.containerEl.contains(element)) ?? null;
+  }
+
+  private getImageSourceOccurrenceIndex(
+    view: MarkdownView,
+    element: Element,
+    imageSource: string
+  ): number | null {
+    const targetImageElement = element.closest(".image-embed") ?? element;
+    let occurrenceIndex = 0;
+
+    for (const imageElement of view.containerEl.querySelectorAll<Element>(".image-embed")) {
+      if (!isInMarkdownContent(imageElement) || getImageSourceFromElement(imageElement) !== imageSource) {
+        continue;
+      }
+
+      if (imageElement === targetImageElement || imageElement.contains(targetImageElement)) {
+        return occurrenceIndex;
+      }
+
+      occurrenceIndex += 1;
+    }
+
+    return null;
+  }
+
+  private findImageTargetBySource(
+    view: MarkdownView,
+    imageSource: string,
+    occurrenceIndex: number
+  ): ImageTarget | null {
+    let remainingMatches = occurrenceIndex;
+
+    for (let lineNumber = 0; lineNumber < view.editor.lineCount(); lineNumber += 1) {
+      const line = view.editor.getLine(lineNumber);
+      for (const match of findImagesInLine(line)) {
+        if (!imageMatchHasSource(match.value, imageSource)) {
+          continue;
+        }
+
+        if (remainingMatches === 0) {
+          return {
+            editor: view.editor,
+            line: lineNumber,
+            match
+          };
+        }
+
+        remainingMatches -= 1;
+      }
+    }
+
+    return null;
   }
 
   private findImageTargetFromSelectedElement(): ImageTarget | null {
