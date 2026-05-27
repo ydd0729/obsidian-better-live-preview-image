@@ -5,7 +5,7 @@
 ## 项目元数据
 
 - 插件 id：`better-live-preview-image`
-- GitHub repo：`ydd0729/better-live-preview-image`
+- GitHub repo：`ydd0729/obsidian-better-live-preview-image`
 - 作者名：`Dong Yang`，不要写成 `yd`。
 - `manifest.json.version`、`package.json.version` 和 Git tag 必须保持一致。
 
