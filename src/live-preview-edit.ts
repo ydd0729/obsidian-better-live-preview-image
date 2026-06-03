@@ -1,6 +1,7 @@
 import {
   activateEditBlockButton,
   clearCodeMirrorImageSelection,
+  isHTMLElement,
   isInLivePreview,
   selectCodeMirrorImage,
 } from "./dom";
@@ -12,7 +13,7 @@ export function revealLivePreviewImageMarkdown(event: MouseEvent, isEnabled: boo
 
   const target = event.target;
   if (
-    !(target instanceof HTMLElement) ||
+    !isHTMLElement(target) ||
     target.closest(".edit-block-button, .image-resize-corner")
   ) {
     return;

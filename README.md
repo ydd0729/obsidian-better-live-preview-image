@@ -4,10 +4,11 @@ Better Live Preview Image improves image editing in Obsidian Live Preview. It wo
 
 ## Features
 
-Better Live Preview Image currently has two features:
+Better Live Preview Image currently has three features:
 
 1. **Image alignment**: Align images left, center, or right from the image context menu, command palette, or default hotkeys.
 2. **Live Preview image Markdown editing**: Click an image in Live Preview to reveal its Markdown link, keep a selected image frame, and resize from the lower-right handle while the Markdown remains visible.
+3. **Callout image size markers**: Apply Obsidian image width and height markers to images inside callouts in Live Preview and Reading view.
 
 ## Usage
 
@@ -40,6 +41,18 @@ Enable **Click image to edit Markdown in Live Preview** in the plugin settings. 
 - The image keeps a selected frame while the Markdown link is visible.
 - Dragging the lower-right resize handle updates the Markdown size token without hiding the Markdown link.
 
+## Callout Image Size Markers
+
+Enable **Apply image size markers inside callouts** in the plugin settings. When enabled, images inside callouts use Obsidian width and height markers in Live Preview and Reading view:
+
+```md
+> [!info] Example
+> ![[image.png|240]]
+> ![[image.png|240x160]]
+```
+
+This setting is enabled by default. Turning it off removes only the plugin-applied inline sizing from rendered callout images; it does not modify your Markdown.
+
 ## How Data Is Stored
 
 Alignment is stored as an image alt marker:
@@ -59,6 +72,7 @@ When an image matches the default alignment configured in the plugin settings, t
 
 - **Default image alignment**: Choose the alignment used for images without an explicit `left`, `center`, or `right` marker.
 - **Click image to edit Markdown in Live Preview**: Hide Obsidian's image edit button, reveal the image Markdown when you click the image, and resize the image while the Markdown remains visible.
+- **Apply image size markers inside callouts**: Make callout images honor Obsidian width and height markers in Live Preview and Reading view.
 
 ## Notes And Limitations
 

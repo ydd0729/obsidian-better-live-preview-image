@@ -43,5 +43,17 @@ export class ImageAlignmentSettingTab extends PluginSettingTab {
             await this.plugin.saveSettings();
           });
       });
+
+    new Setting(containerEl)
+      .setName(this.plugin.getText().calloutImageSizeSyncName)
+      .setDesc(this.plugin.getText().calloutImageSizeSyncDesc)
+      .addToggle((toggle) => {
+        toggle
+          .setValue(this.plugin.settings.syncCalloutImageSizes)
+          .onChange(async (value) => {
+            this.plugin.settings.syncCalloutImageSizes = value;
+            await this.plugin.saveSettings();
+          });
+      });
   }
 }

@@ -1,8 +1,9 @@
 import { setImageWidth } from "./image-markdown";
 import type { ImageTarget } from "./types";
-import { isInLivePreview, selectCodeMirrorImage } from "./dom";
+import { isHTMLElement, isInLivePreview, selectCodeMirrorImage } from "./dom";
 
 type FindImageTarget = (element: Element) => ImageTarget | null;
+type WindowWithPointerEvent = Window & { PointerEvent?: typeof PointerEvent };
 
 const MIN_IMAGE_WIDTH = 20;
 
@@ -18,7 +19,7 @@ export function resizeLivePreviewImageMarkdown(
   }
 
   const target = event.target;
-  if (!(target instanceof HTMLElement) || !target.closest(".image-resize-corner")) {
+  if (!isHTMLElement(target) || !target.closest(".image-resize-corner")) {
     return;
   }
 
@@ -140,7 +141,9 @@ function getRenderedImageWidth(image: HTMLImageElement): number {
 }
 
 function isPointerEvent(event: MouseEvent | PointerEvent): event is PointerEvent {
-  return typeof PointerEvent !== "undefined" && event instanceof PointerEvent;
+  const eventWindow = event.view as WindowWithPointerEvent | null;
+  const PointerEventConstructor = eventWindow?.PointerEvent ?? window.PointerEvent;
+  return typeof PointerEventConstructor !== "undefined" && event instanceof PointerEventConstructor;
 }
 
 function stopResizeEvent(event: MouseEvent | PointerEvent): void {

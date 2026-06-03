@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.0.3
+
+- Add an option to apply Obsidian image size markers inside callouts.
+- Fix callout image size markers in Live Preview and Reading view.
+- Fix Live Preview image Markdown reveal in popout windows.
+- Fix image alignment selectors so callouts are not aligned as whole image blocks.
+
 ## 1.0.2
 
 - Fix Live Preview resizing when the same image link appears multiple times in a note.

@@ -11,6 +11,7 @@ import {
 } from "./src/body-classes";
 import {
   clearCodeMirrorImageSelection,
+  isHTMLElement,
   isInMarkdownContent,
 } from "./src/dom";
 import {
@@ -21,6 +22,7 @@ import {
   imageMatchHasSource,
   setImageAlignment,
 } from "./src/image-markdown";
+import { clearCalloutImageSizeSync, syncCalloutImageSizes } from "./src/image-size";
 import { revealLivePreviewImageMarkdown } from "./src/live-preview-edit";
 import { resizeLivePreviewImageMarkdown } from "./src/live-preview-resize";
 import { getPluginText, type PluginText } from "./src/plugin-text";
@@ -35,23 +37,23 @@ import {
 export default class ImageAlignmentPlugin extends Plugin {
   settings: ImageAlignmentSettings = DEFAULT_SETTINGS;
   private selectedImageElement: Element | null = null;
+  private registeredDocuments = new Set<Document>();
+  private calloutImageSizeObservers = new Map<Document, MutationObserver>();
 
   async onload(): Promise<void> {
     await this.loadSettings();
     this.addSettingTab(new ImageAlignmentSettingTab(this.app, this));
-    this.applyDefaultAlignmentClass();
+    this.registerWorkspaceDocumentEvents();
     this.registerAlignmentCommands();
-
-    this.registerDomEvent(document, "contextmenu", (event) => this.captureImageContextMenu(event), true);
-    this.registerDomEvent(document, "pointerdown", (event) => this.resizeLivePreviewImageMarkdown(event), true);
-    this.registerDomEvent(document, "mousedown", (event) => this.resizeLivePreviewImageMarkdown(event), true);
-    this.registerDomEvent(document, "mousedown", (event) => this.captureSelectedImage(event), true);
-    this.registerDomEvent(document, "click", (event) => this.revealLivePreviewImageMarkdown(event), true);
   }
 
   onunload(): void {
-    clearCodeMirrorImageSelection();
-    clearImageAlignmentBodyClasses();
+    for (const targetDocument of this.registeredDocuments) {
+      clearCodeMirrorImageSelection(targetDocument);
+      clearImageAlignmentBodyClasses(targetDocument);
+      clearCalloutImageSizeSync(targetDocument);
+    }
+    this.disconnectCalloutImageSizeObservers();
   }
 
   getText(): PluginText {
@@ -95,11 +97,98 @@ export default class ImageAlignmentPlugin extends Plugin {
   async saveSettings(): Promise<void> {
     await this.saveData(this.settings);
     this.applyDefaultAlignmentClass();
+    this.applyCalloutImageSizeSyncSetting();
     this.registerAlignmentCommands();
   }
 
   applyDefaultAlignmentClass(): void {
-    applyImageAlignmentBodyClasses(this.settings);
+    for (const targetDocument of this.registeredDocuments) {
+      applyImageAlignmentBodyClasses(this.settings, targetDocument);
+    }
+  }
+
+  private registerWorkspaceDocumentEvents(): void {
+    this.app.workspace.onLayoutReady(() => this.registerExistingWorkspaceDocuments());
+    this.registerDocumentEvents(document);
+    this.registerEvent(this.app.workspace.on("window-open", (_workspaceWindow, targetWindow) => {
+      this.registerDocumentEvents(targetWindow.document);
+    }));
+    this.registerEvent(this.app.workspace.on("window-close", (_workspaceWindow, targetWindow) => {
+      clearCodeMirrorImageSelection(targetWindow.document);
+      clearImageAlignmentBodyClasses(targetWindow.document);
+      this.disableCalloutImageSizeSync(targetWindow.document);
+      this.registeredDocuments.delete(targetWindow.document);
+    }));
+  }
+
+  private registerExistingWorkspaceDocuments(): void {
+    const documents = new Set<Document>([document]);
+    this.app.workspace.iterateAllLeaves((leaf) => {
+      documents.add(leaf.getContainer().doc);
+    });
+
+    for (const targetDocument of documents) {
+      this.registerDocumentEvents(targetDocument);
+    }
+  }
+
+  private registerDocumentEvents(targetDocument: Document): void {
+    if (this.registeredDocuments.has(targetDocument)) {
+      return;
+    }
+
+    this.registeredDocuments.add(targetDocument);
+    applyImageAlignmentBodyClasses(this.settings, targetDocument);
+    this.applyCalloutImageSizeSyncSetting(targetDocument);
+    this.registerDomEvent(targetDocument, "contextmenu", (event) => this.captureImageContextMenu(event), true);
+    this.registerDomEvent(targetDocument, "pointerdown", (event) => this.resizeLivePreviewImageMarkdown(event), true);
+    this.registerDomEvent(targetDocument, "mousedown", (event) => this.resizeLivePreviewImageMarkdown(event), true);
+    this.registerDomEvent(targetDocument, "mousedown", (event) => this.captureSelectedImage(event), true);
+    this.registerDomEvent(targetDocument, "click", (event) => this.revealLivePreviewImageMarkdown(event), true);
+  }
+
+  private applyCalloutImageSizeSyncSetting(targetDocument?: Document): void {
+    const documents = targetDocument ? [targetDocument] : Array.from(this.registeredDocuments);
+
+    for (const documentToUpdate of documents) {
+      if (this.settings.syncCalloutImageSizes) {
+        this.enableCalloutImageSizeSync(documentToUpdate);
+      } else {
+        this.disableCalloutImageSizeSync(documentToUpdate);
+      }
+    }
+  }
+
+  private enableCalloutImageSizeSync(targetDocument: Document): void {
+    syncCalloutImageSizes(targetDocument);
+
+    if (this.calloutImageSizeObservers.has(targetDocument)) {
+      return;
+    }
+
+    const ownerWindow = targetDocument.defaultView ?? window;
+    const observer = new ownerWindow.MutationObserver(() => syncCalloutImageSizes(targetDocument));
+    observer.observe(targetDocument.body, {
+      attributeFilter: ["height", "src", "width"],
+      attributes: true,
+      childList: true,
+      subtree: true
+    });
+    this.calloutImageSizeObservers.set(targetDocument, observer);
+    this.register(() => observer.disconnect());
+  }
+
+  private disableCalloutImageSizeSync(targetDocument: Document): void {
+    this.calloutImageSizeObservers.get(targetDocument)?.disconnect();
+    this.calloutImageSizeObservers.delete(targetDocument);
+    clearCalloutImageSizeSync(targetDocument);
+  }
+
+  private disconnectCalloutImageSizeObservers(): void {
+    for (const observer of this.calloutImageSizeObservers.values()) {
+      observer.disconnect();
+    }
+    this.calloutImageSizeObservers.clear();
   }
 
   private alignSelectedOrCurrentImage(editor: Editor, alignment: ImageAlignment): void {
@@ -130,7 +219,7 @@ export default class ImageAlignmentPlugin extends Plugin {
 
   private captureImageContextMenu(event: MouseEvent): void {
     const target = event.target;
-    if (!(target instanceof HTMLElement)) {
+    if (!isHTMLElement(target)) {
       return;
     }
 
@@ -157,7 +246,7 @@ export default class ImageAlignmentPlugin extends Plugin {
 
   private captureSelectedImage(event: MouseEvent): void {
     const target = event.target;
-    if (!(target instanceof HTMLElement)) {
+    if (!isHTMLElement(target)) {
       return;
     }
 
