@@ -26,6 +26,7 @@
 - 因此这里使用窄作用域 `:has()`：`.markdown-source-view.mod-cm6.is-live-preview .cm-embed-block:has(.image-embed...)`。
 - 这个 block 内通常只有一个 image embed，实际性能风险很低；不要为了机械消除 `:has()` 引入 `MutationObserver` 或复杂 class 同步。
 - Live Preview 的 callout 也是 `.cm-embed-block.cm-callout`，内部可能包含 `.image-embed`；对图片 block 写 `:has(.image-embed)` 时必须排除 `.cm-callout`，避免把整个 callout 当图片块对齐。
+- 排除 `.cm-callout` 后，必须另写 `.cm-callout .callout-content .image-embed` 的图片级 selector，让 callout 内图片自身仍能按 alt token 对齐。
 - alt token selector 写成 `[alt="center"]`、`[alt^="center|"]`、`[alt$="|center"]`、`[alt*="|center|"]` 是为了按 `|` 分隔 token 精确匹配，避免 `[alt*="center"]` 误匹配。
 
 ## 行为约定

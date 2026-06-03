@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.4
+
+- Fix image alignment for images inside callouts in Live Preview.
+
 ## 1.0.3
 
 - Add an option to apply Obsidian image size markers inside callouts.
