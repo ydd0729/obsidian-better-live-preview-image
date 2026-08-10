@@ -2,7 +2,6 @@ import { isElement } from "./dom";
 import type { ImageAlignment } from "./types";
 
 const EDIT_TOOLTIP_ALIGNMENT_ATTRIBUTE = "data-image-alignment-live-preview-edit";
-const EDIT_TOOLTIP_LEFT_PROPERTY = "--image-alignment-live-preview-edit-left";
 
 interface NativeEditAlignmentState {
   activationTimeoutId: number | null;
@@ -10,10 +9,14 @@ interface NativeEditAlignmentState {
   mutationObserver: MutationObserver;
   previousTooltip: HTMLElement | null;
   resizeObserver: ResizeObserver;
+  targetTop: number;
   tooltip: HTMLElement | null;
+  translateX: number | null;
+  translateY: number | null;
 }
 
 const nativeEditAlignmentStates = new Map<HTMLElement, NativeEditAlignmentState>();
+const originalTooltipTranslations = new WeakMap<HTMLElement, string>();
 
 export function preserveLivePreviewImageDuringNativeEdit(
   event: MouseEvent | PointerEvent,
@@ -49,7 +52,8 @@ export function preserveLivePreviewImageDuringNativeEdit(
 
   startNativeEditAlignment(
     sourceView,
-    getImageAlignment(imageElement, defaultAlignment)
+    getImageAlignment(imageElement, defaultAlignment),
+    imageElement.getBoundingClientRect().top
   );
 }
 
@@ -65,7 +69,8 @@ export function clearLivePreviewImageEditPreviews(
 
 function startNativeEditAlignment(
   sourceView: HTMLElement,
-  alignment: ImageAlignment
+  alignment: ImageAlignment,
+  targetTop: number
 ): void {
   const previousTooltip = findNativeEditTooltips(sourceView)[0] ?? null;
   // Keep the old tooltip aligned until Obsidian replaces it with the new one.
@@ -83,7 +88,10 @@ function startNativeEditAlignment(
     resizeObserver: new ownerWindow.ResizeObserver(() => {
       positionNativeEditTooltip(sourceView);
     }),
-    tooltip: null
+    targetTop,
+    tooltip: null,
+    translateX: null,
+    translateY: null
   };
 
   state.mutationObserver.observe(sourceView, {
@@ -130,6 +138,8 @@ function syncNativeEditTooltip(sourceView: HTMLElement): void {
   if (state.tooltip !== tooltip) {
     clearTooltipAlignment(state.tooltip);
     state.resizeObserver.disconnect();
+    state.translateX = null;
+    state.translateY = null;
     state.tooltip = tooltip;
     state.resizeObserver.observe(tooltip);
 
@@ -154,14 +164,12 @@ function positionNativeEditTooltip(sourceView: HTMLElement): void {
   const state = nativeEditAlignmentStates.get(sourceView);
   const tooltip = state?.tooltip;
   const content = sourceView.querySelector<HTMLElement>(".cm-content");
-  const offsetParent = tooltip?.offsetParent;
-  if (!state || !tooltip || !content || !isElement(offsetParent)) {
+  if (!state || !tooltip || !content) {
     return;
   }
 
   const contentRect = content.getBoundingClientRect();
   const tooltipRect = tooltip.getBoundingClientRect();
-  const offsetParentRect = offsetParent.getBoundingClientRect();
   let targetLeft = contentRect.left;
 
   if (state.alignment === "center") {
@@ -170,10 +178,14 @@ function positionNativeEditTooltip(sourceView: HTMLElement): void {
     targetLeft = contentRect.right - tooltipRect.width;
   }
 
-  tooltip.style.setProperty(
-    EDIT_TOOLTIP_LEFT_PROPERTY,
-    `${targetLeft - offsetParentRect.left}px`
-  );
+  const nativeLeft = tooltipRect.left - (state.translateX ?? 0);
+  state.translateX = targetLeft - nativeLeft;
+
+  if (state.translateY === null) {
+    state.translateY = state.targetTop - tooltipRect.top;
+  }
+
+  setTooltipTranslation(tooltip, state.translateX, state.translateY);
 }
 
 function clearNativeEditAlignment(sourceView: HTMLElement): void {
@@ -215,7 +227,32 @@ function clearTooltipAlignment(tooltip: HTMLElement | null): void {
   }
 
   tooltip.removeAttribute(EDIT_TOOLTIP_ALIGNMENT_ATTRIBUTE);
-  tooltip.style.removeProperty(EDIT_TOOLTIP_LEFT_PROPERTY);
+  const originalTranslation = originalTooltipTranslations.get(tooltip);
+  if (originalTranslation === undefined) {
+    return;
+  }
+
+  if (originalTranslation) {
+    tooltip.style.setProperty("translate", originalTranslation);
+  } else {
+    tooltip.style.removeProperty("translate");
+  }
+  originalTooltipTranslations.delete(tooltip);
+}
+
+function setTooltipTranslation(
+  tooltip: HTMLElement,
+  translateX: number,
+  translateY: number
+): void {
+  if (!originalTooltipTranslations.has(tooltip)) {
+    originalTooltipTranslations.set(
+      tooltip,
+      tooltip.style.getPropertyValue("translate")
+    );
+  }
+
+  tooltip.style.setProperty("translate", `${translateX}px ${translateY}px`);
 }
 
 function getImageAlignment(

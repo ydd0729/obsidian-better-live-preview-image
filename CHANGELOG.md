@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.1.1
+
+- Keep native image edit previews at their exact horizontal and vertical positions when opening, switching, or closing edits.
+- Position native edit previews without CSS `!important` declarations.
+
 ## 1.1.0
 
 - Fix Live Preview image alignment with current Obsidian editor DOM structures.
