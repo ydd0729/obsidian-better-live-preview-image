@@ -11,8 +11,6 @@ export interface PluginText {
   commandRight: string;
   calloutImageSizeSyncDesc: string;
   calloutImageSizeSyncName: string;
-  clickImageToEditDesc: string;
-  clickImageToEditName: string;
   defaultAlignmentDesc: string;
   defaultAlignmentName: string;
   menuTitle(alignment: ImageAlignment): string;
@@ -33,8 +31,6 @@ const PLUGIN_TEXT: Record<PluginLanguage, PluginText> = {
     commandRight: "Set current image right aligned",
     calloutImageSizeSyncDesc: "When enabled, images inside callouts use their Obsidian width and height markers in Live Preview and Reading view.",
     calloutImageSizeSyncName: "Apply image size markers inside callouts",
-    clickImageToEditDesc: "When enabled, hide the image edit button in Live Preview and reveal the image Markdown when you click the image.",
-    clickImageToEditName: "Click image to edit Markdown in Live Preview",
     defaultAlignmentDesc: "Images without an explicit alignment marker use this default.",
     defaultAlignmentName: "Default image alignment",
     menuTitle: (alignment) => `Align image ${PLUGIN_TEXT.en.alignmentLabels[alignment].toLowerCase()}`,
@@ -52,8 +48,6 @@ const PLUGIN_TEXT: Record<PluginLanguage, PluginText> = {
     commandRight: "将当前图片右对齐",
     calloutImageSizeSyncDesc: "开启后，callout 内图片会在实时预览和阅读视图中按 Obsidian 宽高标记显示。",
     calloutImageSizeSyncName: "让 callout 内图片应用尺寸标记",
-    clickImageToEditDesc: "开启后，在实时预览中隐藏图片编辑按钮，点击图片时直接显示这张图片的 Markdown 链接。",
-    clickImageToEditName: "实时预览中点击图片编辑 Markdown",
     defaultAlignmentDesc: "没有显式对齐标记的图片会使用这个默认值。",
     defaultAlignmentName: "默认图片对齐",
     menuTitle: (alignment) => `图片${PLUGIN_TEXT.zh.alignmentLabels[alignment]}`,

@@ -1,14 +1,13 @@
 # Better Live Preview Image
 
-Better Live Preview Image improves image editing in Obsidian Live Preview. It works by editing image Markdown directly, so notes stay portable and readable without the plugin.
+Better Live Preview Image improves image alignment and callout image sizing in Obsidian.
 
 ## Features
 
-Better Live Preview Image currently has three features:
+Better Live Preview Image currently has two features:
 
 1. **Image alignment**: Align images left, center, or right from the image context menu, command palette, or default hotkeys.
-2. **Live Preview image Markdown editing**: Click an image in Live Preview to reveal its Markdown link, keep a selected image frame, and resize from the lower-right handle while the Markdown remains visible.
-3. **Callout image size markers**: Apply Obsidian image width and height markers to images inside callouts in Live Preview and Reading view.
+2. **Callout image size markers**: Apply Obsidian image width and height markers to images inside callouts in Live Preview and Reading view.
 
 ## Usage
 
@@ -32,14 +31,7 @@ Default hotkeys:
 
 To change the hotkeys, use Obsidian's built-in **Settings -> Hotkeys** page and search for `Better Live Preview Image`.
 
-## Live Preview Markdown Editing
-
-Enable **Click image to edit Markdown in Live Preview** in the plugin settings. When enabled:
-
-- Obsidian's image edit button is hidden.
-- Clicking a Live Preview image reveals that image's Markdown link.
-- The image keeps a selected frame while the Markdown link is visible.
-- Dragging the lower-right resize handle updates the Markdown size token without hiding the Markdown link.
+When you use Obsidian's native **Edit this block** button, the image remains visible with its current alignment while the Markdown source is shown.
 
 ## Callout Image Size Markers
 
@@ -64,14 +56,11 @@ Alignment is stored as an image alt marker:
 ![left|caption|300](image.png)
 ```
 
-Resize updates standard Obsidian image size markers such as `|300` and preserves existing height tokens such as `|500x300`.
-
 When an image matches the default alignment configured in the plugin settings, the explicit alignment marker is removed. The plugin's CSS then applies the default alignment while the plugin is enabled.
 
 ## Settings
 
 - **Default image alignment**: Choose the alignment used for images without an explicit `left`, `center`, or `right` marker.
-- **Click image to edit Markdown in Live Preview**: Hide Obsidian's image edit button, reveal the image Markdown when you click the image, and resize the image while the Markdown remains visible.
 - **Apply image size markers inside callouts**: Make callout images honor Obsidian width and height markers in Live Preview and Reading view.
 
 ## Notes And Limitations
@@ -101,7 +90,7 @@ Then enable `Better Live Preview Image` from **Settings -> Community plugins**.
 If you find a bug, include:
 
 - The image Markdown before and after the action
-- Whether you used the context menu, a command, a hotkey, or Live Preview click-to-edit
+- Whether you used the context menu, a command, a hotkey, or Obsidian's native edit button
 - Your Obsidian version
 
 ## Development

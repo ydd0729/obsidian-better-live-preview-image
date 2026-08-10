@@ -1,9 +1,9 @@
 {
   "id": "better-live-preview-image",
   "name": "Better Live Preview Image",
-  "version": "1.0.4",
+  "version": "1.1.0",
   "minAppVersion": "1.5.0",
-  "description": "Improves Live Preview image editing with Markdown reveal, resize, and alignment tools.",
+  "description": "Adds image alignment tools and improves image size markers inside callouts.",
   "author": "Dong Yang",
   "isDesktopOnly": false
 }

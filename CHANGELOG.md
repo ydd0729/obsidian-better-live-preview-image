@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.1.0
+
+- Fix Live Preview image alignment with current Obsidian editor DOM structures.
+- Keep images aligned while using Obsidian's native **Edit this block** action, including direct switches between images without duplicate previews or alignment flashes.
+- Remove the custom click-to-reveal Markdown and drag-to-resize interaction in favor of Obsidian's native editing flow.
+- Keep image width and height markers working inside callouts.
+
 ## 1.0.4
 
 - Fix image alignment for images inside callouts in Live Preview.

@@ -10,7 +10,6 @@ import {
   clearImageAlignmentBodyClasses,
 } from "./src/body-classes";
 import {
-  clearCodeMirrorImageSelection,
   isHTMLElement,
   isInMarkdownContent,
 } from "./src/dom";
@@ -23,8 +22,10 @@ import {
   setImageAlignment,
 } from "./src/image-markdown";
 import { clearCalloutImageSizeSync, syncCalloutImageSizes } from "./src/image-size";
-import { revealLivePreviewImageMarkdown } from "./src/live-preview-edit";
-import { resizeLivePreviewImageMarkdown } from "./src/live-preview-resize";
+import {
+  clearLivePreviewImageEditPreviews,
+  preserveLivePreviewImageDuringNativeEdit,
+} from "./src/live-preview-edit";
 import { getPluginText, type PluginText } from "./src/plugin-text";
 import { ImageAlignmentSettingTab } from "./src/setting-tab";
 import {
@@ -49,9 +50,9 @@ export default class ImageAlignmentPlugin extends Plugin {
 
   onunload(): void {
     for (const targetDocument of this.registeredDocuments) {
-      clearCodeMirrorImageSelection(targetDocument);
       clearImageAlignmentBodyClasses(targetDocument);
       clearCalloutImageSizeSync(targetDocument);
+      clearLivePreviewImageEditPreviews(targetDocument);
     }
     this.disconnectCalloutImageSizeObservers();
   }
@@ -88,9 +89,11 @@ export default class ImageAlignmentPlugin extends Plugin {
   }
 
   async loadSettings(): Promise<void> {
+    const savedSettings = (await this.loadData()) as Partial<ImageAlignmentSettings> | null;
     this.settings = {
-      ...DEFAULT_SETTINGS,
-      ...(await this.loadData())
+      defaultAlignment: savedSettings?.defaultAlignment ?? DEFAULT_SETTINGS.defaultAlignment,
+      syncCalloutImageSizes:
+        savedSettings?.syncCalloutImageSizes ?? DEFAULT_SETTINGS.syncCalloutImageSizes
     };
   }
 
@@ -114,8 +117,8 @@ export default class ImageAlignmentPlugin extends Plugin {
       this.registerDocumentEvents(targetWindow.document);
     }));
     this.registerEvent(this.app.workspace.on("window-close", (_workspaceWindow, targetWindow) => {
-      clearCodeMirrorImageSelection(targetWindow.document);
       clearImageAlignmentBodyClasses(targetWindow.document);
+      clearLivePreviewImageEditPreviews(targetWindow.document);
       this.disableCalloutImageSizeSync(targetWindow.document);
       this.registeredDocuments.delete(targetWindow.document);
     }));
@@ -141,10 +144,13 @@ export default class ImageAlignmentPlugin extends Plugin {
     applyImageAlignmentBodyClasses(this.settings, targetDocument);
     this.applyCalloutImageSizeSyncSetting(targetDocument);
     this.registerDomEvent(targetDocument, "contextmenu", (event) => this.captureImageContextMenu(event), true);
-    this.registerDomEvent(targetDocument, "pointerdown", (event) => this.resizeLivePreviewImageMarkdown(event), true);
-    this.registerDomEvent(targetDocument, "mousedown", (event) => this.resizeLivePreviewImageMarkdown(event), true);
     this.registerDomEvent(targetDocument, "mousedown", (event) => this.captureSelectedImage(event), true);
-    this.registerDomEvent(targetDocument, "click", (event) => this.revealLivePreviewImageMarkdown(event), true);
+    this.registerDomEvent(targetDocument, "pointerdown", (event) => {
+      preserveLivePreviewImageDuringNativeEdit(event, this.settings.defaultAlignment);
+    }, true);
+    this.registerDomEvent(targetDocument, "click", (event) => {
+      preserveLivePreviewImageDuringNativeEdit(event, this.settings.defaultAlignment);
+    }, true);
   }
 
   private applyCalloutImageSizeSyncSetting(targetDocument?: Document): void {
@@ -257,20 +263,6 @@ export default class ImageAlignmentPlugin extends Plugin {
         : null;
   }
 
-  private revealLivePreviewImageMarkdown(event: MouseEvent): void {
-    revealLivePreviewImageMarkdown(event, this.settings.clickImageToEditInLivePreview);
-  }
-
-  private resizeLivePreviewImageMarkdown(event: MouseEvent | PointerEvent): void {
-    resizeLivePreviewImageMarkdown(
-      event,
-      this.settings.clickImageToEditInLivePreview,
-      (element) =>
-        this.findImageTargetFromElement(element) ??
-        this.findImageTargetFromSelection()
-    );
-  }
-
   private findImageTargetFromElement(element: Element): ImageTarget | null {
     const imageSource = getImageSourceFromElement(element);
     if (!imageSource) {
@@ -372,17 +364,6 @@ export default class ImageAlignmentPlugin extends Plugin {
     }
 
     return this.findImageTargetFromElement(this.selectedImageElement);
-  }
-
-  private findImageTargetFromSelection(): ImageTarget | null {
-    for (const view of this.getCandidateMarkdownViews()) {
-      const imageTarget = findImageInSelection(view.editor);
-      if (imageTarget) {
-        return imageTarget;
-      }
-    }
-
-    return null;
   }
 
   private alignImageTarget(target: ImageTarget, alignment: ImageAlignment): void {

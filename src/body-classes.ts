@@ -6,10 +6,6 @@ export function applyImageAlignmentBodyClasses(
 ): void {
   clearImageAlignmentBodyClasses(targetDocument);
   targetDocument.body.classList.add(`image-alignment-default-${settings.defaultAlignment}`);
-  targetDocument.body.classList.toggle(
-    "image-alignment-click-image-to-edit",
-    settings.clickImageToEditInLivePreview
-  );
 }
 
 export function clearImageAlignmentBodyClasses(targetDocument: Document = document): void {
@@ -17,5 +13,4 @@ export function clearImageAlignmentBodyClasses(targetDocument: Document = docume
     targetDocument.body.classList.remove(`image-alignment-default-${alignment}`);
     targetDocument.body.classList.remove(`image-alignment-menu-default-${alignment}`);
   }
-  targetDocument.body.classList.remove("image-alignment-click-image-to-edit");
 }

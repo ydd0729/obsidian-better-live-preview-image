@@ -16,12 +16,10 @@ export interface ImageTarget {
 
 export interface ImageAlignmentSettings {
   defaultAlignment: ImageAlignment;
-  clickImageToEditInLivePreview: boolean;
   syncCalloutImageSizes: boolean;
 }
 
 export const DEFAULT_SETTINGS: ImageAlignmentSettings = {
   defaultAlignment: "center",
-  clickImageToEditInLivePreview: false,
   syncCalloutImageSizes: true
 };

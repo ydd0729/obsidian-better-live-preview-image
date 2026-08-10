@@ -33,18 +33,6 @@ export class ImageAlignmentSettingTab extends PluginSettingTab {
       });
 
     new Setting(containerEl)
-      .setName(this.plugin.getText().clickImageToEditName)
-      .setDesc(this.plugin.getText().clickImageToEditDesc)
-      .addToggle((toggle) => {
-        toggle
-          .setValue(this.plugin.settings.clickImageToEditInLivePreview)
-          .onChange(async (value) => {
-            this.plugin.settings.clickImageToEditInLivePreview = value;
-            await this.plugin.saveSettings();
-          });
-      });
-
-    new Setting(containerEl)
       .setName(this.plugin.getText().calloutImageSizeSyncName)
       .setDesc(this.plugin.getText().calloutImageSizeSyncDesc)
       .addToggle((toggle) => {

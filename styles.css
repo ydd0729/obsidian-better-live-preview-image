@@ -1,5 +1,5 @@
 .markdown-preview-view .image-embed,
-.markdown-source-view.mod-cm6.is-live-preview .cm-content > .image-embed,
+.markdown-source-view.mod-cm6.is-live-preview :is(.cm-content, .cm-line) > .image-embed,
 .markdown-source-view.mod-cm6.is-live-preview .cm-embed-block:not(.cm-callout):has(.image-embed),
 .markdown-source-view.mod-cm6.is-live-preview .cm-callout .callout-content .image-embed,
 .markdown-source-view.mod-cm6.is-live-preview .HyperMD-list-line > .image-embed,
@@ -11,7 +11,7 @@
 }
 
 .markdown-preview-view .image-embed,
-.markdown-source-view.mod-cm6.is-live-preview .cm-content > .image-embed {
+.markdown-source-view.mod-cm6.is-live-preview :is(.cm-content, .cm-line) > .image-embed {
   display: flex;
   width: fit-content;
 }
@@ -27,32 +27,11 @@
   display: block;
 }
 
-body.image-alignment-click-image-to-edit
-  .markdown-source-view.mod-cm6.is-live-preview
-  .image-embed
-  .edit-block-button {
-  display: none;
-}
-
-body:not(.is-mobile).image-alignment-click-image-to-edit
-  .markdown-source-view.mod-cm6.is-live-preview
-  div.image-embed.image-alignment-codemirror-selected
-  .image-wrapper::after {
-  box-shadow: inset 0 0 0 2px var(--color-accent);
-  content: "";
-  height: 100%;
-  inset-inline-start: 0;
-  pointer-events: none;
-  position: absolute;
-  top: 0;
-  width: 100%;
-}
-
-body:not(.is-mobile).image-alignment-click-image-to-edit
-  .markdown-source-view.mod-cm6.is-live-preview
-  div.image-embed.image-alignment-codemirror-selected
-  .image-resize-corner::after {
-  opacity: 1;
+.markdown-source-view.mod-cm6.is-live-preview
+  .cm-image-reveal-tooltip[data-image-alignment-live-preview-edit] {
+  left: var(--image-alignment-live-preview-edit-left) !important;
+  right: auto !important;
+  transform: none !important;
 }
 
 body.image-alignment-default-center {
@@ -71,7 +50,7 @@ body.image-alignment-default-right {
 }
 
 .markdown-preview-view .image-embed:is([alt="center"], [alt^="center|"], [alt$="|center"], [alt*="|center|"]),
-.markdown-source-view.mod-cm6.is-live-preview .cm-content > .image-embed:is([alt="center"], [alt^="center|"], [alt$="|center"], [alt*="|center|"]),
+.markdown-source-view.mod-cm6.is-live-preview :is(.cm-content, .cm-line) > .image-embed:is([alt="center"], [alt^="center|"], [alt$="|center"], [alt*="|center|"]),
 .markdown-source-view.mod-cm6.is-live-preview .cm-embed-block:not(.cm-callout):has(.image-embed:is([alt="center"], [alt^="center|"], [alt$="|center"], [alt*="|center|"])),
 .markdown-source-view.mod-cm6.is-live-preview .cm-callout .callout-content .image-embed:is([alt="center"], [alt^="center|"], [alt$="|center"], [alt*="|center|"]),
 .markdown-source-view.mod-cm6.is-live-preview .HyperMD-list-line > .image-embed:is([alt="center"], [alt^="center|"], [alt$="|center"], [alt*="|center|"]),
@@ -81,7 +60,7 @@ body.image-alignment-default-right {
 }
 
 .markdown-preview-view .image-embed:is([alt="left"], [alt^="left|"], [alt$="|left"], [alt*="|left|"]),
-.markdown-source-view.mod-cm6.is-live-preview .cm-content > .image-embed:is([alt="left"], [alt^="left|"], [alt$="|left"], [alt*="|left|"]),
+.markdown-source-view.mod-cm6.is-live-preview :is(.cm-content, .cm-line) > .image-embed:is([alt="left"], [alt^="left|"], [alt$="|left"], [alt*="|left|"]),
 .markdown-source-view.mod-cm6.is-live-preview .cm-embed-block:not(.cm-callout):has(.image-embed:is([alt="left"], [alt^="left|"], [alt$="|left"], [alt*="|left|"])),
 .markdown-source-view.mod-cm6.is-live-preview .cm-callout .callout-content .image-embed:is([alt="left"], [alt^="left|"], [alt$="|left"], [alt*="|left|"]),
 .markdown-source-view.mod-cm6.is-live-preview .HyperMD-list-line > .image-embed:is([alt="left"], [alt^="left|"], [alt$="|left"], [alt*="|left|"]),
@@ -91,7 +70,7 @@ body.image-alignment-default-right {
 }
 
 .markdown-preview-view .image-embed:is([alt="right"], [alt^="right|"], [alt$="|right"], [alt*="|right|"]),
-.markdown-source-view.mod-cm6.is-live-preview .cm-content > .image-embed:is([alt="right"], [alt^="right|"], [alt$="|right"], [alt*="|right|"]),
+.markdown-source-view.mod-cm6.is-live-preview :is(.cm-content, .cm-line) > .image-embed:is([alt="right"], [alt^="right|"], [alt$="|right"], [alt*="|right|"]),
 .markdown-source-view.mod-cm6.is-live-preview .cm-embed-block:not(.cm-callout):has(.image-embed:is([alt="right"], [alt^="right|"], [alt$="|right"], [alt*="|right|"])),
 .markdown-source-view.mod-cm6.is-live-preview .cm-callout .callout-content .image-embed:is([alt="right"], [alt^="right|"], [alt$="|right"], [alt*="|right|"]),
 .markdown-source-view.mod-cm6.is-live-preview .HyperMD-list-line > .image-embed:is([alt="right"], [alt^="right|"], [alt$="|right"], [alt*="|right|"]),
