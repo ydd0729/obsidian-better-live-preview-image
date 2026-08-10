@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.1.2
+
+- Adopt Obsidian's declarative settings API and raise the minimum supported app version to 1.13.0.
+- Remove default command hotkeys so users can assign conflict-free shortcuts themselves.
+- Use Obsidian DOM helpers for synchronized image sizing.
+- Replace broad CSS `:has()` selectors to avoid selector invalidation performance warnings.
+- Add a single-command release script with validation, commit, atomic push, and automatic GitHub release triggering.
+
 ## 1.1.1
 
 - Keep native image edit previews at their exact horizontal and vertical positions when opening, switching, or closing edits.

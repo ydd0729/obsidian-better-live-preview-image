@@ -62,28 +62,21 @@ export default class ImageAlignmentPlugin extends Plugin {
   }
 
   registerAlignmentCommands(): void {
-    for (const alignment of ["left", "center", "right"] as const) {
-      this.removeCommand(getAlignmentCommandId(alignment));
-    }
-
     this.addCommand({
       id: getAlignmentCommandId("left"),
       name: this.getText().commandLeft,
-      hotkeys: [{ modifiers: ["Mod", "Alt", "Shift"], key: "ArrowLeft" }],
       editorCallback: (editor) => this.alignSelectedOrCurrentImage(editor, "left")
     });
 
     this.addCommand({
       id: getAlignmentCommandId("center"),
       name: this.getText().commandCenter,
-      hotkeys: [{ modifiers: ["Mod", "Alt", "Shift"], key: "ArrowDown" }],
       editorCallback: (editor) => this.alignSelectedOrCurrentImage(editor, "center")
     });
 
     this.addCommand({
       id: getAlignmentCommandId("right"),
       name: this.getText().commandRight,
-      hotkeys: [{ modifiers: ["Mod", "Alt", "Shift"], key: "ArrowRight" }],
       editorCallback: (editor) => this.alignSelectedOrCurrentImage(editor, "right")
     });
   }
@@ -101,7 +94,6 @@ export default class ImageAlignmentPlugin extends Plugin {
     await this.saveData(this.settings);
     this.applyDefaultAlignmentClass();
     this.applyCalloutImageSizeSyncSetting();
-    this.registerAlignmentCommands();
   }
 
   applyDefaultAlignmentClass(): void {

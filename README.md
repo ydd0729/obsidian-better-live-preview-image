@@ -6,7 +6,7 @@ Better Live Preview Image improves image alignment and callout image sizing in O
 
 Better Live Preview Image currently has two features:
 
-1. **Image alignment**: Align images left, center, or right from the image context menu, command palette, or default hotkeys.
+1. **Image alignment**: Align images left, center, or right from the image context menu, command palette, or user-assigned hotkeys.
 2. **Callout image size markers**: Apply Obsidian image width and height markers to images inside callouts in Live Preview and Reading view.
 
 ## Usage
@@ -23,13 +23,7 @@ You can also run these commands from the command palette:
 - `Better Live Preview Image: Set current image centered`
 - `Better Live Preview Image: Set current image right aligned`
 
-Default hotkeys:
-
-- `Ctrl/Cmd + Alt + Shift + Left`: align the selected or current image left
-- `Ctrl/Cmd + Alt + Shift + Down`: align the selected or current image center
-- `Ctrl/Cmd + Alt + Shift + Right`: align the selected or current image right
-
-To change the hotkeys, use Obsidian's built-in **Settings -> Hotkeys** page and search for `Better Live Preview Image`.
+The plugin does not reserve default hotkeys. To assign shortcuts, use Obsidian's built-in **Settings -> Hotkeys** page and search for `Better Live Preview Image`.
 
 When you use Obsidian's native **Edit this block** button, the image remains visible with its current alignment while the Markdown source is shown.
 
@@ -77,6 +71,8 @@ Better Live Preview Image runs entirely inside your vault. It does not use netwo
 
 After the plugin is published, install it from **Settings -> Community plugins -> Browse** and search for `Better Live Preview Image`.
 
+Obsidian 1.13.0 or later is required.
+
 For manual installation, copy these files into `.obsidian/plugins/better-live-preview-image/`:
 
 - `manifest.json`
@@ -97,5 +93,26 @@ If you find a bug, include:
 
 ```powershell
 pnpm install
+pnpm run lint
 pnpm run build
+```
+
+## Releasing
+
+Update `manifest.json`, `package.json`, `versions.json`, and `CHANGELOG.md`, then run:
+
+```powershell
+pnpm run release
+```
+
+The script validates the release, runs lint and the build, commits all repository changes, creates the version tag, and atomically pushes `main` and the tag. The tag triggers the GitHub Actions release workflow. The default commit message is `Release <version>`; override it with `--message`:
+
+```powershell
+pnpm run release -- --message "Describe the release"
+```
+
+To validate everything without committing, tagging, or pushing:
+
+```powershell
+pnpm run release -- --dry-run
 ```

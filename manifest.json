@@ -1,8 +1,8 @@
 {
   "id": "better-live-preview-image",
   "name": "Better Live Preview Image",
-  "version": "1.1.1",
-  "minAppVersion": "1.5.0",
+  "version": "1.1.2",
+  "minAppVersion": "1.13.0",
   "description": "Adds image alignment tools and improves image size markers inside callouts.",
   "author": "Dong Yang",
   "isDesktopOnly": false

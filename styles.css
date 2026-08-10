@@ -1,6 +1,6 @@
 .markdown-preview-view .image-embed,
 .markdown-source-view.mod-cm6.is-live-preview :is(.cm-content, .cm-line) > .image-embed,
-.markdown-source-view.mod-cm6.is-live-preview .cm-embed-block:not(.cm-callout):has(.image-embed),
+.markdown-source-view.mod-cm6.is-live-preview .cm-embed-block:not(.cm-callout) .image-embed,
 .markdown-source-view.mod-cm6.is-live-preview .cm-callout .callout-content .image-embed,
 .markdown-source-view.mod-cm6.is-live-preview .HyperMD-list-line > .image-embed,
 .markdown-source-view.mod-cm6.is-live-preview .HyperMD-quote > .image-embed {
@@ -27,6 +27,12 @@
   display: block;
 }
 
+img[data-image-alignment-callout-size-synced] {
+  height: var(--image-alignment-synced-height);
+  max-width: 100%;
+  width: var(--image-alignment-synced-width);
+}
+
 body.image-alignment-default-center {
   --image-alignment-default-left: 50%;
   --image-alignment-default-transform: translateX(-50%);
@@ -44,7 +50,7 @@ body.image-alignment-default-right {
 
 .markdown-preview-view .image-embed:is([alt="center"], [alt^="center|"], [alt$="|center"], [alt*="|center|"]),
 .markdown-source-view.mod-cm6.is-live-preview :is(.cm-content, .cm-line) > .image-embed:is([alt="center"], [alt^="center|"], [alt$="|center"], [alt*="|center|"]),
-.markdown-source-view.mod-cm6.is-live-preview .cm-embed-block:not(.cm-callout):has(.image-embed:is([alt="center"], [alt^="center|"], [alt$="|center"], [alt*="|center|"])),
+.markdown-source-view.mod-cm6.is-live-preview .cm-embed-block:not(.cm-callout) .image-embed:is([alt="center"], [alt^="center|"], [alt$="|center"], [alt*="|center|"]),
 .markdown-source-view.mod-cm6.is-live-preview .cm-callout .callout-content .image-embed:is([alt="center"], [alt^="center|"], [alt$="|center"], [alt*="|center|"]),
 .markdown-source-view.mod-cm6.is-live-preview .HyperMD-list-line > .image-embed:is([alt="center"], [alt^="center|"], [alt$="|center"], [alt*="|center|"]),
 .markdown-source-view.mod-cm6.is-live-preview .HyperMD-quote > .image-embed:is([alt="center"], [alt^="center|"], [alt$="|center"], [alt*="|center|"]) {
@@ -54,7 +60,7 @@ body.image-alignment-default-right {
 
 .markdown-preview-view .image-embed:is([alt="left"], [alt^="left|"], [alt$="|left"], [alt*="|left|"]),
 .markdown-source-view.mod-cm6.is-live-preview :is(.cm-content, .cm-line) > .image-embed:is([alt="left"], [alt^="left|"], [alt$="|left"], [alt*="|left|"]),
-.markdown-source-view.mod-cm6.is-live-preview .cm-embed-block:not(.cm-callout):has(.image-embed:is([alt="left"], [alt^="left|"], [alt$="|left"], [alt*="|left|"])),
+.markdown-source-view.mod-cm6.is-live-preview .cm-embed-block:not(.cm-callout) .image-embed:is([alt="left"], [alt^="left|"], [alt$="|left"], [alt*="|left|"]),
 .markdown-source-view.mod-cm6.is-live-preview .cm-callout .callout-content .image-embed:is([alt="left"], [alt^="left|"], [alt$="|left"], [alt*="|left|"]),
 .markdown-source-view.mod-cm6.is-live-preview .HyperMD-list-line > .image-embed:is([alt="left"], [alt^="left|"], [alt$="|left"], [alt*="|left|"]),
 .markdown-source-view.mod-cm6.is-live-preview .HyperMD-quote > .image-embed:is([alt="left"], [alt^="left|"], [alt$="|left"], [alt*="|left|"]) {
@@ -64,7 +70,7 @@ body.image-alignment-default-right {
 
 .markdown-preview-view .image-embed:is([alt="right"], [alt^="right|"], [alt$="|right"], [alt*="|right|"]),
 .markdown-source-view.mod-cm6.is-live-preview :is(.cm-content, .cm-line) > .image-embed:is([alt="right"], [alt^="right|"], [alt$="|right"], [alt*="|right|"]),
-.markdown-source-view.mod-cm6.is-live-preview .cm-embed-block:not(.cm-callout):has(.image-embed:is([alt="right"], [alt^="right|"], [alt$="|right"], [alt*="|right|"])),
+.markdown-source-view.mod-cm6.is-live-preview .cm-embed-block:not(.cm-callout) .image-embed:is([alt="right"], [alt^="right|"], [alt$="|right"], [alt*="|right|"]),
 .markdown-source-view.mod-cm6.is-live-preview .cm-callout .callout-content .image-embed:is([alt="right"], [alt^="right|"], [alt$="|right"], [alt*="|right|"]),
 .markdown-source-view.mod-cm6.is-live-preview .HyperMD-list-line > .image-embed:is([alt="right"], [alt^="right|"], [alt$="|right"], [alt*="|right|"]),
 .markdown-source-view.mod-cm6.is-live-preview .HyperMD-quote > .image-embed:is([alt="right"], [alt^="right|"], [alt$="|right"], [alt*="|right|"]) {

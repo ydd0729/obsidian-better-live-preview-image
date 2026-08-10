@@ -1,4 +1,4 @@
-import { App, Plugin, PluginSettingTab, Setting } from "obsidian";
+import { App, Plugin, PluginSettingTab, type SettingDefinitionItem } from "obsidian";
 import type { PluginText } from "./plugin-text";
 import type { ImageAlignment, ImageAlignmentSettings } from "./types";
 
@@ -13,35 +13,41 @@ export class ImageAlignmentSettingTab extends PluginSettingTab {
     super(app, plugin);
   }
 
-  display(): void {
-    const { containerEl } = this;
-    containerEl.empty();
+  getSettingDefinitions(): SettingDefinitionItem[] {
+    const text = this.plugin.getText();
 
-    new Setting(containerEl)
-      .setName(this.plugin.getText().defaultAlignmentName)
-      .setDesc(this.plugin.getText().defaultAlignmentDesc)
-      .addDropdown((dropdown) => {
-        dropdown
-          .addOption("center", this.plugin.getText().alignmentLabels.center)
-          .addOption("left", this.plugin.getText().alignmentLabels.left)
-          .addOption("right", this.plugin.getText().alignmentLabels.right)
-          .setValue(this.plugin.settings.defaultAlignment)
-          .onChange(async (value) => {
-            this.plugin.settings.defaultAlignment = value as ImageAlignment;
-            await this.plugin.saveSettings();
+    return [
+      {
+        name: text.defaultAlignmentName,
+        desc: text.defaultAlignmentDesc,
+        render: (setting) => {
+          setting.addDropdown((dropdown) => {
+            dropdown
+              .addOption("center", text.alignmentLabels.center)
+              .addOption("left", text.alignmentLabels.left)
+              .addOption("right", text.alignmentLabels.right)
+              .setValue(this.plugin.settings.defaultAlignment)
+              .onChange(async (value) => {
+                this.plugin.settings.defaultAlignment = value as ImageAlignment;
+                await this.plugin.saveSettings();
+              });
           });
-      });
-
-    new Setting(containerEl)
-      .setName(this.plugin.getText().calloutImageSizeSyncName)
-      .setDesc(this.plugin.getText().calloutImageSizeSyncDesc)
-      .addToggle((toggle) => {
-        toggle
-          .setValue(this.plugin.settings.syncCalloutImageSizes)
-          .onChange(async (value) => {
-            this.plugin.settings.syncCalloutImageSizes = value;
-            await this.plugin.saveSettings();
+        }
+      },
+      {
+        name: text.calloutImageSizeSyncName,
+        desc: text.calloutImageSizeSyncDesc,
+        render: (setting) => {
+          setting.addToggle((toggle) => {
+            toggle
+              .setValue(this.plugin.settings.syncCalloutImageSizes)
+              .onChange(async (value) => {
+                this.plugin.settings.syncCalloutImageSizes = value;
+                await this.plugin.saveSettings();
+              });
           });
-      });
+        }
+      }
+    ];
   }
 }

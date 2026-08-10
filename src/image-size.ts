@@ -32,15 +32,17 @@ function syncImageSize(imageElement: HTMLElement): void {
   }
 
   image.setAttribute(SYNCED_IMAGE_SIZE_ATTRIBUTE, "");
-  image.style.width = `${width}px`;
-  image.style.maxWidth = "100%";
-  image.style.height = height ? `${height}px` : "auto";
+  image.setCssProps({
+    "--image-alignment-synced-width": `${width}px`,
+    "--image-alignment-synced-height": height ? `${height}px` : "auto"
+  });
 }
 
 function clearSyncedImageSize(image: HTMLImageElement): void {
-  image.style.removeProperty("width");
-  image.style.removeProperty("max-width");
-  image.style.removeProperty("height");
+  image.setCssProps({
+    "--image-alignment-synced-width": "",
+    "--image-alignment-synced-height": ""
+  });
   image.removeAttribute(SYNCED_IMAGE_SIZE_ATTRIBUTE);
 }
 
